@@ -1,0 +1,13 @@
+{
+  "name": "my-claude-project",
+  "version": "1.0.0",
+  "description": "Claude Code ve GitHub entegrasyonu örnek projesi",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Test yapılıyor...\" && exit 0"
+  },
+  "keywords": ["claude", "github", "automation"],
+  "author": "",
+  "license": "MIT"
+}
