@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meltem Test - Claude Code Entegrasyonu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin: 5px;
+        }
+
+        .feature {
+            background: #f7f7f7;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .feature h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .status {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: #e8f5e9;
+            border-radius: 10px;
+        }
+
+        .status h2 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎉 Meltem Test Project</h1>
+        <p style="color: #666; margin-bottom: 20px;">Claude Code ve GitHub entegrasyonu ile güçlendirilmiş</p>
+
+        <div style="margin: 20px 0;">
+            <span class="badge">✓ GitHub</span>
+            <span class="badge">✓ Claude Code</span>
+            <span class="badge">✓ Vercel</span>
+            <span class="badge">✓ Auto Deploy</span>
+        </div>
+
+        <div class="feature">
+            <h3>🤖 Claude Code Entegrasyonu</h3>
+            <p>Issue ve Pull Request'lerde @claude etiketleyerek otomatik kod analizi ve öneriler alın.</p>
+        </div>
+
+        <div class="feature">
+            <h3>🚀 Otomatik Deployment</h3>
+            <p>Her commit otomatik olarak Vercel'e deploy edilir. Anında canlıya alın!</p>
+        </div>
+
+        <div class="feature">
+            <h3>⚡ GitHub Actions</h3>
+            <p>CI/CD pipeline ile otomatik test ve deployment.</p>
+        </div>
+
+        <div class="status">
+            <h2>✅ Sistem Aktif</h2>
+            <p>Deployment başarılı! Tüm sistemler çalışıyor.</p>
+            <p style="margin-top: 10px;">
+                <a href="https://github.com/MeltemAkdilek/Meltem-Test" target="_blank">GitHub Repository →</a>
+            </p>
+        </div>
+
+        <div style="margin-top: 30px; text-align: center; color: #999; font-size: 0.9em;">
+            <p>Powered by Claude Code, GitHub & Vercel</p>
+            <p style="margin-top: 5px;">Deployment Time: <span id="time"></span></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('time').textContent = new Date().toLocaleString('tr-TR');
+    </script>
+</body>
+</html>

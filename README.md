@@ -7,6 +7,8 @@ Bu proje Claude Code ile GitHub entegrasyonunu göstermek için oluşturulmuştu
 - Claude Code ile otomatik code review
 - GitHub Actions ile CI/CD pipeline
 - Issue ve Pull Request otomasyonu
+- Vercel ile otomatik deployment
+- Her commit'te canlıya otomatik yayınlanma
 
 ## Kurulum
 
