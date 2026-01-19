@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Müşteri Bakiyesi - Hakan Döviz</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        /* Modal Container */
+        .modal-container {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Modal Header */
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .close-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: #f1f5f9;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        /* Modal Body */
+        .modal-body {
+            padding: 25px;
+            overflow-y: auto;
+            max-height: calc(90vh - 140px);
+        }
+
+        /* Currency Summary Cards - Sadece Bakiyesi Olanlar */
+        .currency-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .currency-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            min-width: 140px;
+        }
+
+        .currency-card .badge {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .currency-card .badge.try { background: #ef4444; }
+        .currency-card .badge.usd { background: #22c55e; }
+        .currency-card .badge.eur { background: #3b82f6; }
+        .currency-card .badge.gbp { background: #8b5cf6; }
+
+        .currency-card .amount {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .currency-card .amount.negative { color: #ef4444; }
+        .currency-card .amount.positive { color: #22c55e; }
+
+        /* Table */
+        .table-container {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #1e293b;
+        }
+
+        th {
+            padding: 14px 20px;
+            text-align: left;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        th:nth-child(2),
+        th:nth-child(3),
+        th:nth-child(4) {
+            text-align: right;
+        }
+
+        td {
+            padding: 16px 20px;
+            font-size: 0.95rem;
+            color: #334155;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        td:nth-child(2),
+        td:nth-child(3),
+        td:nth-child(4) {
+            text-align: right;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: #fafafa;
+        }
+
+        .currency-name {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .alacak {
+            color: #22c55e;
+            font-weight: 500;
+        }
+
+        .borc {
+            color: #ef4444;
+            font-weight: 500;
+        }
+
+        .bakiye {
+            font-weight: 600;
+        }
+
+        .bakiye.positive {
+            color: #22c55e;
+        }
+
+        .bakiye.negative {
+            color: #ef4444;
+        }
+
+        /* Footer */
+        .modal-footer {
+            background: #1e293b;
+            padding: 18px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: white;
+        }
+
+        .footer-amount {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #ef4444;
+        }
+
+        /* Empty State Info */
+        .info-note {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            color: #0369a1;
+        }
+
+        .info-note i {
+            color: #0ea5e9;
+        }
+    </style>
+</head>
+<body>
+    <!-- Modal Overlay -->
+    <div class="modal-overlay">
+        <div class="modal-container">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h2 class="modal-title">Müşteri Bakiyesi - Ufuk Doğan</h2>
+                <button class="close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <!-- Currency Summary - Sadece Bakiyesi Olanlar -->
+                <div class="currency-summary">
+                    <div class="currency-card">
+                        <span class="badge try">TRY</span>
+                        <span class="amount negative">-625.906,40</span>
+                    </div>
+                    <div class="currency-card">
+                        <span class="badge usd">USD</span>
+                        <span class="amount positive">1.000,00</span>
+                    </div>
+                    <div class="currency-card">
+                        <span class="badge eur">EUR</span>
+                        <span class="amount positive">2.225,00</span>
+                    </div>
+                    <div class="currency-card">
+                        <span class="badge gbp">GBP</span>
+                        <span class="amount positive">1.000,00</span>
+                    </div>
+                </div>
+
+                <!-- Info Note -->
+                <div class="info-note">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Sadece bakiyesi olan para birimleri gösterilmektedir.</span>
+                </div>
+
+                <!-- Table - Sadece Bakiyesi Olanlar -->
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Para Birimi</th>
+                                <th>Alacak (Müşteriden)</th>
+                                <th>Borç (Müşteriye)</th>
+                                <th>Bakiye</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="currency-name">TRY</td>
+                                <td class="alacak">4.120.057,49</td>
+                                <td class="borc">4.745.963,88</td>
+                                <td class="bakiye negative">-625.906,40</td>
+                            </tr>
+                            <tr>
+                                <td class="currency-name">USD</td>
+                                <td class="alacak">1.000,00</td>
+                                <td class="borc">0,00</td>
+                                <td class="bakiye positive">1.000,00</td>
+                            </tr>
+                            <tr>
+                                <td class="currency-name">EUR</td>
+                                <td class="alacak">2.225,00</td>
+                                <td class="borc">0,00</td>
+                                <td class="bakiye positive">2.225,00</td>
+                            </tr>
+                            <tr>
+                                <td class="currency-name">GBP</td>
+                                <td class="alacak">1.000,00</td>
+                                <td class="borc">0,00</td>
+                                <td class="bakiye positive">1.000,00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <span class="footer-label">NET DURUM (TL)</span>
+                <span class="footer-amount">-462.206,40 TL</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
