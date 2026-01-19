@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ödeme Yapılacaklar Listesi - Hakan Döviz</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            min-height: 100vh;
+            padding: 20px 30px;
+        }
+
+        /* Header */
+        .page-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .back-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            cursor: pointer;
+        }
+
+        .page-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 0;
+        }
+
+        .tab-item {
+            padding: 12px 20px;
+            font-size: 0.9rem;
+            color: #64748b;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .tab-item:hover {
+            color: #1e293b;
+        }
+
+        .tab-item.active {
+            color: #1e293b;
+            border-bottom-color: #1e293b;
+            font-weight: 500;
+        }
+
+        /* Bank Summary Cards */
+        .bank-summary-section {
+            margin-bottom: 25px;
+        }
+
+        .bank-summary-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .bank-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
+        }
+
+        .bank-summary-card {
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .bank-summary-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .bank-summary-card.active {
+            border-color: #22c55e;
+            background: #f0fdf4;
+        }
+
+        .bank-summary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .bank-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: white;
+        }
+
+        .bank-logo.denizbank { background: linear-gradient(135deg, #0066b3, #004d8c); }
+        .bank-logo.isbank { background: linear-gradient(135deg, #1e3a8a, #1e40af); }
+        .bank-logo.garanti { background: linear-gradient(135deg, #047857, #059669); }
+        .bank-logo.akbank { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+        .bank-logo.yapikredi { background: linear-gradient(135deg, #1d4ed8, #2563eb); }
+        .bank-logo.ziraat { background: linear-gradient(135deg, #65a30d, #84cc16); }
+
+        .bank-count-badge {
+            padding: 4px 10px;
+            background: #fef3c7;
+            color: #d97706;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .bank-name {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+        }
+
+        .bank-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .bank-stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .bank-stat-label {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+        }
+
+        .bank-stat-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #22c55e;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .filter-label {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .bank-filter-select {
+            padding: 8px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            min-width: 180px;
+        }
+
+        .filter-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .total-badge {
+            padding: 8px 16px;
+            background: #d1fae5;
+            color: #059669;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Main Content Card */
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .content-header {
+            padding: 20px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .content-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .content-subtitle {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .edit-btn {
+            padding: 8px 16px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: #334155;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Bank Group */
+        .bank-group {
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .bank-group:last-child {
+            border-bottom: none;
+        }
+
+        .bank-group-header {
+            padding: 16px 20px;
+            background: #f8fafc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .bank-group-header:hover {
+            background: #f1f5f9;
+        }
+
+        .bank-group-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .bank-group-logo {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.7rem;
+            color: white;
+        }
+
+        .bank-group-info h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 2px;
+        }
+
+        .bank-group-info span {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .bank-group-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .bank-group-stats {
+            display: flex;
+            gap: 25px;
+            text-align: right;
+        }
+
+        .bank-group-stat {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .bank-group-stat-label {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+        }
+
+        .bank-group-stat-value {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .bank-group-stat-value.green {
+            color: #22c55e;
+        }
+
+        .toggle-icon {
+            color: #94a3b8;
+            transition: transform 0.2s;
+        }
+
+        .bank-group.open .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Transaction List */
+        .transaction-list {
+            display: none;
+            padding: 0;
+        }
+
+        .bank-group.open .transaction-list {
+            display: block;
+        }
+
+        .transaction-item {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-item:hover {
+            background: #fafafa;
+        }
+
+        .transaction-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .transaction-id {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            width: 50px;
+        }
+
+        .transaction-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .transaction-customer {
+            font-weight: 500;
+            color: #1e293b;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .transaction-iban {
+            font-size: 0.8rem;
+            color: #64748b;
+            font-family: monospace;
+        }
+
+        .bakiye-btn {
+            padding: 4px 10px;
+            background: #d1fae5;
+            color: #059669;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .transaction-middle {
+            display: flex;
+            gap: 30px;
+            text-align: center;
+        }
+
+        .transaction-stat {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .transaction-stat-label {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+        }
+
+        .transaction-stat-value {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #334155;
+        }
+
+        .transaction-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .transaction-amount {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #22c55e;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .action-btn.view {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            color: #64748b;
+        }
+
+        .action-btn.complete {
+            background: #22c55e;
+            border: none;
+            color: white;
+        }
+
+        .action-btn.approve {
+            background: #22c55e;
+            border: none;
+            color: white;
+        }
+
+        /* Ödeme Kalemleri */
+        .payment-items {
+            padding: 0 20px 15px 85px;
+            display: none;
+        }
+
+        .transaction-item.expanded + .payment-items {
+            display: block;
+        }
+
+        .payment-items-header {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .payment-item {
+            padding: 12px 15px;
+            background: #fef3c7;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .payment-item-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .payment-item-id {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        .payment-item-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .payment-item-bank {
+            font-weight: 500;
+            color: #1e293b;
+            font-size: 0.9rem;
+        }
+
+        .payment-item-iban {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-family: monospace;
+        }
+
+        .payment-item-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .payment-item-amount {
+            font-weight: 600;
+            color: #22c55e;
+        }
+
+        .payment-item-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .payment-item-actions button {
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .payment-item-actions .delete {
+            background: #fee2e2;
+            border: none;
+            color: #dc2626;
+        }
+
+        .payment-item-actions .edit {
+            background: #f1f5f9;
+            border: none;
+            color: #64748b;
+        }
+
+        .payment-item-actions .approve {
+            background: #22c55e;
+            border: none;
+            color: white;
+        }
+
+        /* Summary Footer */
+        .summary-footer {
+            padding: 15px 20px;
+            background: #f8fafc;
+            display: flex;
+            justify-content: flex-end;
+            gap: 30px;
+        }
+
+        .summary-item {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .summary-label {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .summary-value {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .summary-value.green {
+            color: #22c55e;
+        }
+
+        /* Müşteri Hareketleri */
+        .customer-movements {
+            padding: 15px 20px 15px 85px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .customer-movements-header {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .movement-item {
+            padding: 10px 15px;
+            background: #f8fafc;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .movement-id {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        .movement-amount {
+            font-weight: 500;
+            color: #22c55e;
+        }
+
+        .movement-status {
+            padding: 4px 10px;
+            background: #d1fae5;
+            color: #059669;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="page-header">
+        <button class="back-btn">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <h1 class="page-title">Ödeme Yapılacaklar Listesi</h1>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="tab-nav">
+        <div class="tab-item active">
+            <i class="fas fa-edit"></i>
+            Edit
+        </div>
+    </div>
+
+    <!-- Bank Summary Cards - Tepede Banka Özeti -->
+    <div class="bank-summary-section">
+        <div class="bank-summary-title">Bankaya Göre Bekleyen Transferler</div>
+        <div class="bank-summary-grid">
+            <!-- DenizBank -->
+            <div class="bank-summary-card active" onclick="filterByBank('denizbank')">
+                <div class="bank-summary-header">
+                    <div class="bank-logo denizbank">DNZ</div>
+                    <span class="bank-count-badge">3 işlem</span>
+                </div>
+                <div class="bank-name">DenizBank</div>
+                <div class="bank-stats">
+                    <div class="bank-stat-item">
+                        <span class="bank-stat-label">Bekleyen Tutar</span>
+                        <span class="bank-stat-value">₺7.155,00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- İş Bankası -->
+            <div class="bank-summary-card" onclick="filterByBank('isbank')">
+                <div class="bank-summary-header">
+                    <div class="bank-logo isbank">İŞ</div>
+                    <span class="bank-count-badge">2 işlem</span>
+                </div>
+                <div class="bank-name">İş Bankası</div>
+                <div class="bank-stats">
+                    <div class="bank-stat-item">
+                        <span class="bank-stat-label">Bekleyen Tutar</span>
+                        <span class="bank-stat-value">₺4.850,00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Garanti BBVA -->
+            <div class="bank-summary-card" onclick="filterByBank('garanti')">
+                <div class="bank-summary-header">
+                    <div class="bank-logo garanti">GRT</div>
+                    <span class="bank-count-badge">1 işlem</span>
+                </div>
+                <div class="bank-name">Garanti BBVA</div>
+                <div class="bank-stats">
+                    <div class="bank-stat-item">
+                        <span class="bank-stat-label">Bekleyen Tutar</span>
+                        <span class="bank-stat-value">₺2.385,00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Akbank -->
+            <div class="bank-summary-card" onclick="filterByBank('akbank')">
+                <div class="bank-summary-header">
+                    <div class="bank-logo akbank">AKB</div>
+                    <span class="bank-count-badge">2 işlem</span>
+                </div>
+                <div class="bank-name">Akbank</div>
+                <div class="bank-stats">
+                    <div class="bank-stat-item">
+                        <span class="bank-stat-label">Bekleyen Tutar</span>
+                        <span class="bank-stat-value">₺5.200,00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Yapı Kredi -->
+            <div class="bank-summary-card" onclick="filterByBank('yapikredi')">
+                <div class="bank-summary-header">
+                    <div class="bank-logo yapikredi">YKB</div>
+                    <span class="bank-count-badge">1 işlem</span>
+                </div>
+                <div class="bank-name">Yapı Kredi</div>
+                <div class="bank-stats">
+                    <div class="bank-stat-item">
+                        <span class="bank-stat-label">Bekleyen Tutar</span>
+                        <span class="bank-stat-value">₺1.750,00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="filter-section">
+        <div class="filter-left">
+            <span class="filter-label">Banka Filtresi:</span>
+            <select class="bank-filter-select" id="bankFilter" onchange="filterByBankSelect()">
+                <option value="all">Tüm Bankalar</option>
+                <option value="denizbank">DenizBank</option>
+                <option value="isbank">İş Bankası</option>
+                <option value="garanti">Garanti BBVA</option>
+                <option value="akbank">Akbank</option>
+                <option value="yapikredi">Yapı Kredi</option>
+                <option value="ziraat">Ziraat Bankası</option>
+            </select>
+        </div>
+        <div class="filter-right">
+            <span class="total-badge">9 işlem bekliyor</span>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-card">
+        <div class="content-header">
+            <div>
+                <div class="content-title">Ödeme Yapılacak İşlemler</div>
+                <div class="content-subtitle">Ödemeye hazır bekleyen işlemler</div>
+            </div>
+            <button class="edit-btn">
+                <i class="fas fa-edit"></i>
+                Edit
+            </button>
+        </div>
+
+        <!-- Bank Group: DenizBank -->
+        <div class="bank-group open" data-bank="denizbank">
+            <div class="bank-group-header" onclick="toggleBankGroup(this)">
+                <div class="bank-group-left">
+                    <div class="bank-group-logo denizbank">DNZ</div>
+                    <div class="bank-group-info">
+                        <h4>DenizBank</h4>
+                        <span>3 bekleyen transfer</span>
+                    </div>
+                </div>
+                <div class="bank-group-right">
+                    <div class="bank-group-stats">
+                        <div class="bank-group-stat">
+                            <span class="bank-group-stat-label">Toplam Tutar</span>
+                            <span class="bank-group-stat-value green">₺7.155,00</span>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+            </div>
+            <div class="transaction-list">
+                <!-- Transaction 1 -->
+                <div class="transaction-item">
+                    <div class="transaction-left">
+                        <span class="transaction-id">#12312368</span>
+                        <div class="transaction-info">
+                            <span class="transaction-customer">
+                                Ufuk Doğan
+                                <button class="bakiye-btn"><i class="fas fa-wallet"></i> Bakiye</button>
+                            </span>
+                            <span class="transaction-iban">905425291013</span>
+                        </div>
+                    </div>
+                    <div class="transaction-middle">
+                        <div class="transaction-stat">
+                            <span class="transaction-stat-label">Kaynak</span>
+                            <span class="transaction-stat-value">₺2.385,00</span>
+                        </div>
+                        <div class="transaction-stat">
+                            <span class="transaction-stat-label">Kur</span>
+                            <span class="transaction-stat-value">53,0000</span>
+                        </div>
+                        <div class="transaction-stat">
+                            <span class="transaction-stat-label">Hedef</span>
+                            <span class="transaction-stat-value">€45,00</span>
+                        </div>
+                    </div>
+                    <div class="transaction-right">
+                        <span class="transaction-amount">2.385,00 TRY</span>
+                        <div class="action-btns">
+                            <button class="action-btn view"><i class="fas fa-eye"></i> Görüntüle</button>
+                            <button class="action-btn complete"><i class="fas fa-check"></i> Tamamla</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Items for Transaction 1 -->
+                <div class="payment-items" style="display: block;">
+                    <div class="payment-items-header">
+                        <i class="fas fa-list"></i>
+                        ÖDEME KALEMLERİ (1)
+                    </div>
+                    <div class="payment-item">
+                        <div class="payment-item-left">
+                            <span class="payment-item-id">#67</span>
+                            <div class="payment-item-info">
+                                <span class="payment-item-bank">DenizBank - Ufuk Doğan - TR00 0000 0000 0000 0000 0010</span>
+                                <span class="payment-item-iban">TR00 0000 0000 0000 0000 0010</span>
+                            </div>
+                        </div>
+                        <div class="payment-item-right">
+                            <span class="payment-item-amount">2.385,00 TRY</span>
+                            <div class="payment-item-actions">
+                                <button class="delete"><i class="fas fa-trash"></i></button>
+                                <button class="edit"><i class="fas fa-edit"></i></button>
+                                <button class="approve"><i class="fas fa-check"></i> Onayla</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary for Transaction 1 -->
+                <div class="summary-footer">
+                    <div class="summary-item">
+                        <span class="summary-label">Kalem Toplamı:</span>
+                        <span class="summary-value">₺2.385,00</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Kaynak Tutar:</span>
+                        <span class="summary-value">₺2.385,00</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Fark:</span>
+                        <span class="summary-value green">+₺0,00</span>
+                    </div>
+                </div>
+
+                <!-- Müşteri Hareketleri -->
+                <div class="customer-movements">
+                    <div class="customer-movements-header">
+                        <i class="fas fa-exchange-alt"></i>
+                        MÜŞTERİ HAREKETLERİ (1)
+                        <i class="fas fa-chevron-up" style="margin-left: auto;"></i>
+                    </div>
+                    <div class="movement-item">
+                        <span class="movement-id">#6343</span>
+                        <span>-</span>
+                        <span class="movement-amount">€45,00</span>
+                        <span class="movement-status">ONAYLI</span>
+                    </div>
+                </div>
+
+                <!-- Transaction 2 -->
+                <div class="transaction-item" style="border-top: 1px solid #e2e8f0;">
+                    <div class="transaction-left">
+                        <span class="transaction-id">#12312370</span>
+                        <div class="transaction-info">
+                            <span class="transaction-customer">
+                                Ahmet Yılmaz
+                                <button class="bakiye-btn"><i class="fas fa-wallet"></i> Bakiye</button>
+                            </span>
+                            <span class="transaction-iban">905321456789</span>
+                        </div>
+                    </div>
+                    <div class="transaction-middle">
+                        <div class="transaction-stat">
+                            <span class="transaction-stat-label">Kaynak</span>
+                            <span class="transaction-stat-value">₺2.500,00</span>
+                        </div>
+                        <div class="transaction-stat">
+                            <span class="transaction-stat-label">Kur</span>
+                            <span class="transaction-stat-value">35,0000</span>
+                        </div>
+                        <div class="transaction-stat">
+                            <span class="transaction-stat-label">Hedef</span>
+                            <span class="transaction-stat-value">$71,43</span>
+                        </div>
+                    </div>
+                    <div class="transaction-right">
+                        <span class="transaction-amount">2.500,00 TRY</span>
+                        <div class="action-btns">
+                            <button class="action-btn view"><i class="fas fa-eye"></i> Görüntüle</button>
+                            <button class="action-btn complete"><i class="fas fa-check"></i> Tamamla</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transaction 3 -->
+                <div class="transaction-item">
+                    <div class="transaction-left">
+                        <span class="transaction-id">#12312375</span>
+                        <div class="transaction-info">
+                            <span class="transaction-customer">
+                                Mehmet Demir
+                                <button class="bakiye-btn"><i class="fas fa-wallet"></i> Bakiye</button>
+                            </span>
+                            <span class="transaction-iban">905556667788</span>
+                        </div>
+                    </div>
+                    <div class="transaction-middle">
+                        <div class="transaction-stat">
+                            <span class="transaction-stat-label">Kaynak</span>
+                            <span class="transaction-stat-value">₺2.270,00</span>
+                        </div>
+                        <div class="transaction-stat">
+                            <span class="transaction-stat-label">Kur</span>
+                            <span class="transaction-stat-value">45,4000</span>
+                        </div>
+                        <div class="transaction-stat">
+                            <span class="transaction-stat-label">Hedef</span>
+                            <span class="transaction-stat-value">€50,00</span>
+                        </div>
+                    </div>
+                    <div class="transaction-right">
+                        <span class="transaction-amount">2.270,00 TRY</span>
+                        <div class="action-btns">
+                            <button class="action-btn view"><i class="fas fa-eye"></i> Görüntüle</button>
+                            <button class="action-btn complete"><i class="fas fa-check"></i> Tamamla</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bank Group: İş Bankası -->
+        <div class="bank-group" data-bank="isbank">
+            <div class="bank-group-header" onclick="toggleBankGroup(this)">
+                <div class="bank-group-left">
+                    <div class="bank-group-logo isbank">İŞ</div>
+                    <div class="bank-group-info">
+                        <h4>İş Bankası</h4>
+                        <span>2 bekleyen transfer</span>
+                    </div>
+                </div>
+                <div class="bank-group-right">
+                    <div class="bank-group-stats">
+                        <div class="bank-group-stat">
+                            <span class="bank-group-stat-label">Toplam Tutar</span>
+                            <span class="bank-group-stat-value green">₺4.850,00</span>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+            </div>
+            <div class="transaction-list">
+                <div class="transaction-item">
+                    <div class="transaction-left">
+                        <span class="transaction-id">#12312380</span>
+                        <div class="transaction-info">
+                            <span class="transaction-customer">
+                                Ali Kaya
+                                <button class="bakiye-btn"><i class="fas fa-wallet"></i> Bakiye</button>
+                            </span>
+                            <span class="transaction-iban">905111222333</span>
+                        </div>
+                    </div>
+                    <div class="transaction-middle">
+                        <div class="transaction-stat">
+                            <span class="transaction-stat-label">Kaynak</span>
+                            <span class="transaction-stat-value">₺2.450,00</span>
+                        </div>
+                        <div class="transaction-stat">
+                            <span class="transaction-stat-label">Kur</span>
+                            <span class="transaction-stat-value">49,0000</span>
+                        </div>
+                        <div class="transaction-stat">
+                            <span class="transaction-stat-label">Hedef</span>
+                            <span class="transaction-stat-value">€50,00</span>
+                        </div>
+                    </div>
+                    <div class="transaction-right">
+                        <span class="transaction-amount">2.450,00 TRY</span>
+                        <div class="action-btns">
+                            <button class="action-btn view"><i class="fas fa-eye"></i> Görüntüle</button>
+                            <button class="action-btn complete"><i class="fas fa-check"></i> Tamamla</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="transaction-item">
+                    <div class="transaction-left">
+                        <span class="transaction-id">#12312382</span>
+                        <div class="transaction-info">
+                            <span class="transaction-customer">
+                                Fatma Şahin
+                                <button class="bakiye-btn"><i class="fas fa-wallet"></i> Bakiye</button>
+                            </span>
+                            <span class="transaction-iban">905444555666</span>
+                        </div>
+                    </div>
+                    <div class="transaction-middle">
+                        <div class="transaction-stat">
+                            <span class="transaction-stat-label">Kaynak</span>
+                            <span class="transaction-stat-value">₺2.400,00</span>
+                        </div>
+                        <div class="transaction-stat">
+                            <span class="transaction-stat-label">Kur</span>
+                            <span class="transaction-stat-value">48,0000</span>
+                        </div>
+                        <div class="transaction-stat">
+                            <span class="transaction-stat-label">Hedef</span>
+                            <span class="transaction-stat-value">€50,00</span>
+                        </div>
+                    </div>
+                    <div class="transaction-right">
+                        <span class="transaction-amount">2.400,00 TRY</span>
+                        <div class="action-btns">
+                            <button class="action-btn view"><i class="fas fa-eye"></i> Görüntüle</button>
+                            <button class="action-btn complete"><i class="fas fa-check"></i> Tamamla</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bank Group: Garanti -->
+        <div class="bank-group" data-bank="garanti">
+            <div class="bank-group-header" onclick="toggleBankGroup(this)">
+                <div class="bank-group-left">
+                    <div class="bank-group-logo garanti">GRT</div>
+                    <div class="bank-group-info">
+                        <h4>Garanti BBVA</h4>
+                        <span>1 bekleyen transfer</span>
+                    </div>
+                </div>
+                <div class="bank-group-right">
+                    <div class="bank-group-stats">
+                        <div class="bank-group-stat">
+                            <span class="bank-group-stat-label">Toplam Tutar</span>
+                            <span class="bank-group-stat-value green">₺2.385,00</span>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+            </div>
+            <div class="transaction-list">
+                <div class="transaction-item">
+                    <div class="transaction-left">
+                        <span class="transaction-id">#12312390</span>
+                        <div class="transaction-info">
+                            <span class="transaction-customer">
+                                Zeynep Yıldız
+                                <button class="bakiye-btn"><i class="fas fa-wallet"></i> Bakiye</button>
+                            </span>
+                            <span class="transaction-iban">905777888999</span>
+                        </div>
+                    </div>
+                    <div class="transaction-middle">
+                        <div class="transaction-stat">
+                            <span class="transaction-stat-label">Kaynak</span>
+                            <span class="transaction-stat-value">₺2.385,00</span>
+                        </div>
+                        <div class="transaction-stat">
+                            <span class="transaction-stat-label">Kur</span>
+                            <span class="transaction-stat-value">53,0000</span>
+                        </div>
+                        <div class="transaction-stat">
+                            <span class="transaction-stat-label">Hedef</span>
+                            <span class="transaction-stat-value">€45,00</span>
+                        </div>
+                    </div>
+                    <div class="transaction-right">
+                        <span class="transaction-amount">2.385,00 TRY</span>
+                        <div class="action-btns">
+                            <button class="action-btn view"><i class="fas fa-eye"></i> Görüntüle</button>
+                            <button class="action-btn complete"><i class="fas fa-check"></i> Tamamla</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Banka grubu aç/kapa
+        function toggleBankGroup(header) {
+            const group = header.closest('.bank-group');
+            group.classList.toggle('open');
+        }
+
+        // Banka kartına tıklayınca filtrele
+        function filterByBank(bankId) {
+            // Kartları güncelle
+            document.querySelectorAll('.bank-summary-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            // Select'i güncelle
+            document.getElementById('bankFilter').value = bankId;
+
+            // Grupları filtrele
+            filterBankGroups(bankId);
+        }
+
+        // Select ile filtrele
+        function filterByBankSelect() {
+            const bankId = document.getElementById('bankFilter').value;
+
+            // Kartları güncelle
+            document.querySelectorAll('.bank-summary-card').forEach(card => {
+                card.classList.remove('active');
+                if (bankId === 'all' || card.onclick.toString().includes(bankId)) {
+                    // Active state logic
+                }
+            });
+
+            filterBankGroups(bankId);
+        }
+
+        // Grupları filtrele
+        function filterBankGroups(bankId) {
+            document.querySelectorAll('.bank-group').forEach(group => {
+                if (bankId === 'all' || group.dataset.bank === bankId) {
+                    group.style.display = 'block';
+                } else {
+                    group.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

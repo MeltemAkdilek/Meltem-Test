@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction Detail - Hakan Döviz</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --sidebar-bg: #1e1b4b;
+            --sidebar-width: 60px;
+            --panel-width: 420px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px 0;
+            z-index: 1000;
+        }
+
+        .sidebar-logo {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #818cf8, #6366f1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            color: #94a3b8;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-item:hover,
+        .sidebar-item.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            border-left-color: var(--primary-color);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 20px 30px;
+            transition: margin-right 0.3s ease;
+        }
+
+        .main-content.panel-open {
+            margin-right: var(--panel-width);
+        }
+
+        /* Header */
+        .page-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: white;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #f1f5f9;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 0;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            font-size: 0.9rem;
+            color: #64748b;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            color: var(--primary-color);
+        }
+
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .tab .plus {
+            margin-left: 8px;
+            font-size: 0.8rem;
+        }
+
+        /* Transaction Header Card */
+        .transaction-header {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 25px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .transaction-id {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .transaction-id h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge.alis {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .badge.ready {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .customer-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .customer-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #10b981;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .customer-name {
+            font-weight: 500;
+            color: #1e293b;
+        }
+
+        .menu-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: #f1f5f9;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        /* Section Card */
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* User Filter */
+        .user-filter {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-filter label {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .user-filter select {
+            padding: 6px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: #334155;
+            background: white;
+            cursor: pointer;
+        }
+
+        .section-body {
+            padding: 20px;
+        }
+
+        /* Transaction List - Unified */
+        .transaction-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .transaction-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            background: #f8fafc;
+            border-radius: 10px;
+            border-left: 4px solid transparent;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .transaction-item:hover {
+            background: #f1f5f9;
+        }
+
+        .transaction-item.incoming {
+            border-left-color: #22c55e;
+        }
+
+        .transaction-item.outgoing {
+            border-left-color: #ef4444;
+        }
+
+        .transaction-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .transaction-icon.incoming {
+            background: #dcfce7;
+            color: #22c55e;
+        }
+
+        .transaction-icon.outgoing {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .transaction-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .transaction-type {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1e293b;
+        }
+
+        .transaction-date {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        .transaction-right {
+            text-align: right;
+        }
+
+        .transaction-amount {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .transaction-amount.incoming {
+            color: #22c55e;
+        }
+
+        .transaction-amount.outgoing {
+            color: #ef4444;
+        }
+
+        .transaction-currency {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        /* Summary Row */
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+
+        .summary-value {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .summary-value.positive {
+            color: #22c55e;
+        }
+
+        .summary-value.negative {
+            color: #ef4444;
+        }
+
+        /* Payment List */
+        .payment-table {
+            width: 100%;
+        }
+
+        .payment-table th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            background: #f8fafc;
+        }
+
+        .payment-table td {
+            padding: 14px 16px;
+            font-size: 0.9rem;
+            color: #334155;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .payment-account {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .account-name {
+            font-weight: 500;
+            color: #1e293b;
+        }
+
+        .account-iban {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            font-family: monospace;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-badge.pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .status-badge.completed {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        /* Slide Panel */
+        .slide-panel {
+            position: fixed;
+            top: 0;
+            right: -var(--panel-width);
+            width: var(--panel-width);
+            height: 100vh;
+            background: white;
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+            z-index: 1001;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide-panel.open {
+            right: 0;
+        }
+
+        .panel-header {
+            padding: 20px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .panel-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: #f1f5f9;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        .panel-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        /* State Card */
+        .state-card {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .state-label {
+            font-size: 0.8rem;
+            color: #92400e;
+            margin-bottom: 4px;
+        }
+
+        .state-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #78350f;
+            margin-bottom: 15px;
+        }
+
+        .complete-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1e293b;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .complete-btn:hover {
+            background: #f8fafc;
+        }
+
+        /* History Section */
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .history-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .history-count {
+            padding: 4px 10px;
+            background: #d1fae5;
+            color: #059669;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .history-item {
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 10px;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .history-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .history-user {
+            padding: 4px 10px;
+            background: #e0e7ff;
+            color: #4f46e5;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .history-type {
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+
+        .history-date {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-bottom: 10px;
+        }
+
+        .history-change {
+            font-size: 0.85rem;
+            color: #334155;
+        }
+
+        .history-change .label {
+            color: #64748b;
+        }
+
+        .history-change .old {
+            color: #ef4444;
+            text-decoration: line-through;
+        }
+
+        .history-change .new {
+            color: #22c55e;
+        }
+
+        .panel-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .save-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .save-btn:hover {
+            background: #4f46e5;
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+
+        .info-value {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1e293b;
+        }
+
+        /* Full width section */
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        /* Toggle Panel Button */
+        .toggle-panel-btn {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .toggle-panel-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .toggle-panel-btn.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <i class="fas fa-exchange-alt"></i>
+        </div>
+        <nav class="sidebar-menu">
+            <a href="#" class="sidebar-item"><i class="fas fa-th-large"></i></a>
+            <a href="#" class="sidebar-item active"><i class="fas fa-dollar-sign"></i></a>
+            <a href="#" class="sidebar-item"><i class="fas fa-wallet"></i></a>
+            <a href="#" class="sidebar-item"><i class="fas fa-cog"></i></a>
+            <a href="#" class="sidebar-item"><i class="fas fa-users"></i></a>
+            <a href="#" class="sidebar-item"><i class="fas fa-sitemap"></i></a>
+            <a href="#" class="sidebar-item"><i class="fas fa-edit"></i></a>
+            <a href="#" class="sidebar-item"><i class="fas fa-user"></i></a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content panel-open">
+        <!-- Page Header -->
+        <div class="page-header">
+            <button class="back-btn">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <h1 class="page-title">Transactions</h1>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <a href="#" class="tab active">General</a>
+            <a href="#" class="tab">Customer Transactions <span class="plus">+</span></a>
+            <a href="#" class="tab">Transaction Payment Lines <span class="plus">+</span></a>
+        </div>
+
+        <!-- Transaction Header -->
+        <div class="transaction-header">
+            <div class="transaction-id">
+                <h2>#12312368</h2>
+                <span class="badge alis">ALIŞ</span>
+                <span class="badge ready">READY-TO-PAY</span>
+            </div>
+            <div class="customer-info">
+                <div class="customer-avatar">U</div>
+                <span class="customer-name">Ufuk Doğan</span>
+            </div>
+            <button class="menu-btn">
+                <i class="fas fa-ellipsis-h"></i>
+            </button>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="content-grid">
+            <!-- Günlük İşlem Hareketleri - Unified -->
+            <div class="section-card">
+                <div class="section-header">
+                    <span class="section-title">Günlük İşlem Hareketleri</span>
+                    <div class="user-filter">
+                        <label>Kullanıcı:</label>
+                        <select id="userFilter">
+                            <option value="all">Tümü</option>
+                            <option value="caglar">Çağlar Özyıldırım</option>
+                            <option value="ahmet">Ahmet Yılmaz</option>
+                            <option value="mehmet">Mehmet Demir</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="section-body">
+                    <div class="transaction-list">
+                        <!-- Gelen Para - Yeşil -->
+                        <div class="transaction-item incoming" onclick="openPanel()">
+                            <div class="transaction-left">
+                                <div class="transaction-icon incoming">
+                                    <i class="fas fa-arrow-down"></i>
+                                </div>
+                                <div class="transaction-details">
+                                    <span class="transaction-type">Müşteriden Gelen</span>
+                                    <span class="transaction-date">14.01.2026 11:39</span>
+                                </div>
+                            </div>
+                            <div class="transaction-right">
+                                <div class="transaction-amount incoming">+45,00 EUR</div>
+                                <div class="transaction-currency">≈ 2.385,00 TRY</div>
+                            </div>
+                        </div>
+
+                        <!-- Giden Para - Kırmızı -->
+                        <div class="transaction-item outgoing" onclick="openPanel()">
+                            <div class="transaction-left">
+                                <div class="transaction-icon outgoing">
+                                    <i class="fas fa-arrow-up"></i>
+                                </div>
+                                <div class="transaction-details">
+                                    <span class="transaction-type">Müşteriye Gönderilen</span>
+                                    <span class="transaction-date">14.01.2026 10:15</span>
+                                </div>
+                            </div>
+                            <div class="transaction-right">
+                                <div class="transaction-amount outgoing">-1.200,00 TRY</div>
+                                <div class="transaction-currency">Nakit Ödeme</div>
+                            </div>
+                        </div>
+
+                        <!-- Gelen Para - Yeşil -->
+                        <div class="transaction-item incoming" onclick="openPanel()">
+                            <div class="transaction-left">
+                                <div class="transaction-icon incoming">
+                                    <i class="fas fa-arrow-down"></i>
+                                </div>
+                                <div class="transaction-details">
+                                    <span class="transaction-type">Müşteriden Gelen</span>
+                                    <span class="transaction-date">14.01.2026 09:22</span>
+                                </div>
+                            </div>
+                            <div class="transaction-right">
+                                <div class="transaction-amount incoming">+500,00 USD</div>
+                                <div class="transaction-currency">≈ 17.500,00 TRY</div>
+                            </div>
+                        </div>
+
+                        <!-- Giden Para - Kırmızı -->
+                        <div class="transaction-item outgoing" onclick="openPanel()">
+                            <div class="transaction-left">
+                                <div class="transaction-icon outgoing">
+                                    <i class="fas fa-arrow-up"></i>
+                                </div>
+                                <div class="transaction-details">
+                                    <span class="transaction-type">Müşteriye Gönderilen</span>
+                                    <span class="transaction-date">13.01.2026 16:45</span>
+                                </div>
+                            </div>
+                            <div class="transaction-right">
+                                <div class="transaction-amount outgoing">-250,00 EUR</div>
+                                <div class="transaction-currency">≈ 13.250,00 TRY</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Summary -->
+                    <div class="summary-row">
+                        <div class="summary-item">
+                            <div class="summary-label">Toplam Gelen</div>
+                            <div class="summary-value positive">+19.885,00 TRY</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">Toplam Giden</div>
+                            <div class="summary-value negative">-14.450,00 TRY</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">Net</div>
+                            <div class="summary-value positive">+5.435,00 TRY</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- İşlem Bilgileri -->
+            <div class="section-card">
+                <div class="section-header">
+                    <span class="section-title">İşlem Bilgileri</span>
+                </div>
+                <div class="section-body">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Kur</span>
+                            <span class="info-value">53,0000</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Kayıt Tarihi</span>
+                            <span class="info-value">14.01.2026 11:39</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Güncelleme</span>
+                            <span class="info-value">19.01.2026 12:43</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Valör Tarihi</span>
+                            <span class="info-value">14.01.2026 11:39</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Oluşturan</span>
+                            <span class="info-value">Çağlar Özyıldırım</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Durum</span>
+                            <span class="info-value">ready-to-pay</span>
+                        </div>
+                        <div class="info-item full-width">
+                            <span class="info-label">Aktiflik</span>
+                            <span class="info-value">Aktif</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ödeme Yapılacaklar Listesi - Aynı Kalacak -->
+            <div class="section-card full-width">
+                <div class="section-header">
+                    <span class="section-title">Ödeme Yapılacaklar Listesi</span>
+                </div>
+                <div class="section-body" style="padding: 0;">
+                    <table class="payment-table">
+                        <thead>
+                            <tr>
+                                <th>Hesap</th>
+                                <th>Tutar</th>
+                                <th>Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="payment-account">
+                                        <span class="account-name">Ufuk Doğan - TR00 0000 0000 0000 0000 0010</span>
+                                        <span class="account-iban">DenizBank</span>
+                                    </div>
+                                </td>
+                                <td><strong>2.385,00 TRY</strong></td>
+                                <td><span class="status-badge pending">Onay Bekliyor</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Slide Panel - Sağda Açılır Pencere -->
+    <aside class="slide-panel open" id="slidePanel">
+        <div class="panel-header">
+            <h3 class="panel-title">Transactions</h3>
+            <button class="panel-close" onclick="closePanel()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="panel-body">
+            <!-- State Card -->
+            <div class="state-card">
+                <div class="state-label">State</div>
+                <div class="state-value">Ödemeye Hazır</div>
+                <button class="complete-btn">
+                    <i class="fas fa-check-circle"></i>
+                    Ödemeyi Tamamla
+                </button>
+            </div>
+
+            <!-- İşlem Geçmişi -->
+            <div class="history-section">
+                <div class="history-header">
+                    <div class="history-title">
+                        <i class="fas fa-history"></i>
+                        İşlem Geçmişi
+                    </div>
+                    <span class="history-count">5 kayıt</span>
+                </div>
+
+                <div class="history-list">
+                    <div class="history-item">
+                        <div class="history-item-header">
+                            <span class="history-user">Çağlar Özyıldırım güncelledi</span>
+                            <span class="history-type">Transactions</span>
+                        </div>
+                        <div class="history-date">14.01.2026 11:40:26</div>
+                        <div class="history-change">
+                            <span class="label">State:</span>
+                            <span class="old">created</span>
+                            <span>→</span>
+                            <span class="new">ready-to-pay</span>
+                        </div>
+                    </div>
+
+                    <div class="history-item">
+                        <div class="history-item-header">
+                            <span class="history-user">Çağlar Özyıldırım güncelledi</span>
+                            <span class="history-type">Customer Transactions</span>
+                        </div>
+                        <div class="history-date">14.01.2026 11:39:46</div>
+                        <div class="history-change">
+                            <span class="label">Status:</span>
+                            <span class="old">Onay bekleniyor</span>
+                            <span>→</span>
+                            <span class="new">Aktif</span>
+                        </div>
+                        <div class="history-change" style="margin-top: 6px;">
+                            <span class="label">Updated At:</span>
+                            <span class="old">14.01.2026 11:39</span>
+                            <span>→</span>
+                            <span class="new">14.01.2026 11:39</span>
+                        </div>
+                    </div>
+
+                    <div class="history-item">
+                        <div class="history-item-header">
+                            <span class="history-user">Çağlar Özyıldırım oluşturdu</span>
+                            <span class="history-type">Customer Transactions</span>
+                        </div>
+                        <div class="history-date">14.01.2026 11:39:35</div>
+                        <div class="history-change">
+                            <span class="label">Customer:</span>
+                            <span class="new">Ufuk Doğan</span>
+                        </div>
+                        <div class="history-change" style="margin-top: 6px;">
+                            <span class="label">Amount:</span>
+                            <span class="new">45,00 EUR</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-footer">
+            <button class="save-btn">SAVE</button>
+        </div>
+    </aside>
+
+    <!-- Toggle Panel Button -->
+    <button class="toggle-panel-btn hidden" id="toggleBtn" onclick="openPanel()">
+        <i class="fas fa-history"></i>
+    </button>
+
+    <script>
+        function openPanel() {
+            document.getElementById('slidePanel').classList.add('open');
+            document.querySelector('.main-content').classList.add('panel-open');
+            document.getElementById('toggleBtn').classList.add('hidden');
+        }
+
+        function closePanel() {
+            document.getElementById('slidePanel').classList.remove('open');
+            document.querySelector('.main-content').classList.remove('panel-open');
+            document.getElementById('toggleBtn').classList.remove('hidden');
+        }
+
+        // User filter functionality
+        document.getElementById('userFilter').addEventListener('change', function() {
+            const selectedUser = this.value;
+            // Filter logic would go here
+            console.log('Filtering by user:', selectedUser);
+        });
+    </script>
+</body>
+</html>
