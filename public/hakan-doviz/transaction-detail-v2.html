@@ -217,6 +217,27 @@
             color: #64748b;
         }
 
+        .bakiye-btn {
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #c9a962, #b8944f);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .bakiye-btn:hover {
+            background: linear-gradient(135deg, #b8944f, #a68540);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(201, 169, 98, 0.4);
+        }
+
         /* Content Grid */
         .content-grid {
             display: grid;
@@ -825,6 +846,10 @@
             <div class="customer-section">
                 <div class="customer-avatar">U</div>
                 <span class="customer-name">Ufuk Doğan</span>
+                <button class="bakiye-btn" onclick="window.open('musteri-bakiyesi.html', '_blank')">
+                    <i class="fas fa-wallet"></i>
+                    Müşteri Bakiye
+                </button>
             </div>
             <div class="state-card">
                 <div class="state-info">
@@ -849,18 +874,6 @@
                     <span class="section-title">Müşteri Ödemeleri</span>
                 </div>
                 <div class="section-body">
-                    <!-- Checkbox Options - Aynı Kalacak -->
-                    <div class="checkbox-options">
-                        <label class="checkbox-option">
-                            <input type="checkbox">
-                            Yuvarla
-                        </label>
-                        <label class="checkbox-option">
-                            <input type="checkbox">
-                            Ödeme Muaf İşlem
-                        </label>
-                    </div>
-
                     <!-- Transaction List - Gelen Yeşil, Giden Kırmızı -->
                     <div class="transaction-list">
                         <!-- Gelen - Yeşil -->
