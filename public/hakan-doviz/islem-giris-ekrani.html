@@ -896,21 +896,24 @@
                             </div>
                             <div class="customer-list" id="customerList">
                                 <!-- Aktif Müşteriler -->
-                                <div class="customer-item" data-status="active" onclick="selectCustomer('ufuk', 'Ufuk Doğan', 'active')">
+                                <div class="customer-item" data-status="active" data-muafiyet="false" onclick="selectCustomer('ufuk', 'Ufuk Doğan', 'active', '', '', false)">
                                     <div class="customer-item-left">
                                         <span class="customer-item-name">Ufuk Doğan</span>
                                         <span class="customer-item-info">TCKN: 12345678901</span>
                                     </div>
                                     <span class="customer-status-badge active">Aktif</span>
                                 </div>
-                                <div class="customer-item" data-status="active" onclick="selectCustomer('atlas', 'Atlas Gıda San. Tic. A.Ş.', 'active')">
+                                <div class="customer-item" data-status="active" data-muafiyet="true" onclick="selectCustomer('atlas', 'Atlas Gıda San. Tic. A.Ş.', 'active', '', '', true)">
                                     <div class="customer-item-left">
                                         <span class="customer-item-name">Atlas Gıda San. Tic. A.Ş.</span>
                                         <span class="customer-item-info">VKN: 1234567890</span>
                                     </div>
-                                    <span class="customer-status-badge active">Aktif</span>
+                                    <div style="display: flex; gap: 6px; align-items: center;">
+                                        <span class="customer-status-badge" style="background: #dbeafe; color: #1d4ed8;">Vergi Muaf</span>
+                                        <span class="customer-status-badge active">Aktif</span>
+                                    </div>
                                 </div>
-                                <div class="customer-item" data-status="active" onclick="selectCustomer('guney', 'Güney San. Tic. A.Ş.', 'active')">
+                                <div class="customer-item" data-status="active" data-muafiyet="false" onclick="selectCustomer('guney', 'Güney San. Tic. A.Ş.', 'active', '', '', false)">
                                     <div class="customer-item-left">
                                         <span class="customer-item-name">Güney San. Tic. A.Ş.</span>
                                         <span class="customer-item-info">VKN: 9876543210</span>
@@ -918,21 +921,24 @@
                                     <span class="customer-status-badge active">Aktif</span>
                                 </div>
                                 <!-- Pasif Müşteriler -->
-                                <div class="customer-item passive" data-status="passive" onclick="selectCustomer('mehmet', 'Mehmet Yılmaz', 'passive', 'Ödeme gecikmeleri nedeniyle pasife alındı', '15.12.2025')">
+                                <div class="customer-item passive" data-status="passive" data-muafiyet="false" onclick="selectCustomer('mehmet', 'Mehmet Yılmaz', 'passive', 'Ödeme gecikmeleri nedeniyle pasife alındı', '15.12.2025', false)">
                                     <div class="customer-item-left">
                                         <span class="customer-item-name">Mehmet Yılmaz</span>
                                         <span class="customer-item-info">TCKN: 98765432109</span>
                                     </div>
                                     <span class="customer-status-badge passive">Pasif</span>
                                 </div>
-                                <div class="customer-item passive" data-status="passive" onclick="selectCustomer('abc', 'ABC Tekstil Ltd. Şti.', 'passive', 'Şirket faaliyetlerini durdurdu', '01.11.2025')">
+                                <div class="customer-item passive" data-status="passive" data-muafiyet="true" onclick="selectCustomer('abc', 'ABC Tekstil Ltd. Şti.', 'passive', 'Şirket faaliyetlerini durdurdu', '01.11.2025', true)">
                                     <div class="customer-item-left">
                                         <span class="customer-item-name">ABC Tekstil Ltd. Şti.</span>
                                         <span class="customer-item-info">VKN: 5555555555</span>
                                     </div>
-                                    <span class="customer-status-badge passive">Pasif</span>
+                                    <div style="display: flex; gap: 6px; align-items: center;">
+                                        <span class="customer-status-badge" style="background: #dbeafe; color: #1d4ed8;">Vergi Muaf</span>
+                                        <span class="customer-status-badge passive">Pasif</span>
+                                    </div>
                                 </div>
-                                <div class="customer-item passive" data-status="passive" onclick="selectCustomer('ali', 'Ali Kara', 'passive', 'Müşteri talebiyle pasife alındı', '20.10.2025')">
+                                <div class="customer-item passive" data-status="passive" data-muafiyet="false" onclick="selectCustomer('ali', 'Ali Kara', 'passive', 'Müşteri talebiyle pasife alındı', '20.10.2025', false)">
                                     <div class="customer-item-left">
                                         <span class="customer-item-name">Ali Kara</span>
                                         <span class="customer-item-info">TCKN: 11122233344</span>
@@ -953,7 +959,18 @@
                                 <span id="selectedCustomerTckn">-</span>
                             </div>
                         </div>
-                        <span class="customer-status-badge" id="selectedCustomerBadge">-</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span class="customer-status-badge" id="selectedCustomerMuafiyetBadge" style="display: none; background: #dbeafe; color: #1d4ed8;">Vergi Muaf</span>
+                            <span class="customer-status-badge" id="selectedCustomerBadge">-</span>
+                        </div>
+                    </div>
+
+                    <!-- Muafiyet Bilgi Kutusu -->
+                    <div class="muafiyet-info" id="muafiyetInfo" style="display: none; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 10px; margin-bottom: 10px;">
+                        <div style="display: flex; align-items: center; gap: 8px; color: #1d4ed8; font-size: 0.85rem;">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Bu müşteri vergi muafiyetine sahiptir. Satış işlemlerinde BSMV uygulanmayacaktır.</span>
+                        </div>
                     </div>
 
                     <!-- Pasif Müşteri Uyarı Kutusu -->
@@ -981,49 +998,178 @@
                     </div>
                     <div class="form-group">
                         <label>İşlem Türü</label>
-                        <select>
-                            <option>Seçiniz</option>
+                        <select id="islemTuru" onchange="onIslemTuruChange()">
+                            <option value="">Seçiniz</option>
+                            <option value="alis">Alış</option>
+                            <option value="satis">Satış</option>
+                            <option value="arbitraj">Arbitraj</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Para Birimi</label>
-                        <select>
-                            <option>Seçiniz</option>
+                        <select id="paraBirimi" onchange="calculateBSMV()">
+                            <option value="">Seçiniz</option>
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option>
+                            <option value="CHF">CHF</option>
+                            <option value="JPY">JPY</option>
+                            <option value="SAR">SAR</option>
+                            <option value="AED">AED</option>
                         </select>
                     </div>
-                    <div class="form-group" style="width: 60px;">
+                    <!-- Karşı Döviz - Sadece Arbitraj'da görünür -->
+                    <div class="form-group" id="karsiDovizGroup" style="display: none;">
+                        <label>Karşı Döviz</label>
+                        <select id="karsiDoviz" onchange="calculateBSMV()">
+                            <option value="">Seçiniz</option>
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option>
+                            <option value="CHF">CHF</option>
+                            <option value="JPY">JPY</option>
+                            <option value="SAR">SAR</option>
+                            <option value="AED">AED</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="width: 60px;" id="plusBtnGroup">
                         <label>&nbsp;</label>
                         <button style="padding: 10px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 6px;">+</button>
                     </div>
                     <div class="form-group">
                         <label>Miktar</label>
-                        <input type="number" value="0">
+                        <input type="text" id="miktar" value="0" oninput="calculateBSMV()" onchange="calculateBSMV()">
                     </div>
                     <div class="form-group">
                         <label>BSMV</label>
                         <div class="checkbox-group">
                             <label class="checkbox-item">
-                                <input type="checkbox" checked> BSMV
+                                <input type="checkbox" id="bsmvCheckbox" onchange="calculateBSMV()"> <span id="bsmvLabel">BSMV</span>
                             </label>
                             <label class="checkbox-item">
-                                <input type="checkbox"> Dahil
+                                <input type="checkbox" id="bsmvDahilCheckbox" onchange="calculateBSMV()"> <span id="dahilLabel">Dahil</span>
                             </label>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>&nbsp;</label>
+                        <label>BSMV Tutar</label>
                         <div style="display: flex; align-items: center; gap: 5px;">
-                            <span>‰</span>
-                            <input type="number" value="2" style="width: 60px;">
+                            <input type="text" id="bsmvTutar" value="0.00" style="width: 100px; background: #f8fafc;" readonly>
+                            <span style="font-size: 0.8rem; color: #64748b;">TL</span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label>Fiyat (Kur)</label>
-                        <input type="text" value="0.0000">
+                        <input type="text" id="fiyatKur" value="0.0000" oninput="calculateBSMV()" onchange="calculateBSMV()">
+                    </div>
+                    <!-- Karşı Kur - Sadece Arbitraj'da görünür, kullanıcı girer -->
+                    <div class="form-group" id="karsiKurGroup" style="display: none;">
+                        <label>Karşı Kur</label>
+                        <input type="text" id="karsiKur" value="0.0000" oninput="calculateBSMV()" onchange="calculateBSMV()" style="background: #fef3c7; font-weight: 600;">
+                    </div>
+                    <!-- Çarpan - Otomatik hesaplanır, readonly -->
+                    <div class="form-group" id="caprazKurGroup" style="display: none;">
+                        <label>Çarpan</label>
+                        <input type="text" id="caprazKur" value="0,00000" style="background: #f0fdf4; font-weight: 600;" readonly>
                     </div>
                     <div class="form-group">
                         <label>Valör Tarihi</label>
                         <input type="date" value="2026-01-19">
+                    </div>
+                </div>
+
+                <!-- Arbitraj İşlem Özeti - Excel Tablo Formatı -->
+                <div class="arbitraj-ozet" id="arbitrajOzet" style="display: none; margin-top: 15px;">
+                    <!-- Başlık Satırı -->
+                    <div style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: white; padding: 8px 12px; font-weight: 600; font-size: 0.9rem; border-radius: 6px 6px 0 0;">
+                        ARBİTRAJ İŞLEM ÖZETİ - 2 AYAKLI İŞLEM
+                    </div>
+
+                    <!-- Tablo -->
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; background: white; border: 1px solid #d1d5db;">
+                        <!-- Tablo Başlığı -->
+                        <thead>
+                            <tr style="background: #374151; color: white;">
+                                <th style="padding: 8px 10px; text-align: left; border: 1px solid #4b5563; font-weight: 600;">İŞLEM</th>
+                                <th style="padding: 8px 10px; text-align: left; border: 1px solid #4b5563; font-weight: 600;">KODU</th>
+                                <th style="padding: 8px 10px; text-align: right; border: 1px solid #4b5563; font-weight: 600;">MİKTAR</th>
+                                <th style="padding: 8px 10px; text-align: right; border: 1px solid #4b5563; font-weight: 600;">KUR</th>
+                                <th style="padding: 8px 10px; text-align: right; border: 1px solid #4b5563; font-weight: 600;">TUTAR</th>
+                                <th style="padding: 8px 10px; text-align: center; border: 1px solid #4b5563; font-weight: 600;">BİRİM</th>
+                                <th style="padding: 8px 10px; text-align: right; border: 1px solid #4b5563; font-weight: 600; background: #dc2626;">BSMV</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Satış Satırı (1. Ayak) -->
+                            <tr id="arbitrajSatisRow" style="background: #fef2f2;">
+                                <td style="padding: 8px 10px; border: 1px solid #e5e7eb;">
+                                    <div style="display: flex; align-items: center; gap: 6px;">
+                                        <select id="arbitrajIslem1" style="padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px; background: white; font-size: 0.8rem;">
+                                            <option value="SATIS" selected>SATIŞ</option>
+                                        </select>
+                                        <span style="color: #64748b; font-size: 0.75rem;">▼</span>
+                                    </div>
+                                </td>
+                                <td style="padding: 8px 10px; border: 1px solid #e5e7eb;">
+                                    <span id="ayak1Kodu" style="font-weight: 600; color: #1e293b;">EUR</span>
+                                </td>
+                                <td style="padding: 8px 10px; border: 1px solid #e5e7eb; text-align: right; font-family: monospace;">
+                                    <span id="ayak1Miktar">0,00</span>
+                                </td>
+                                <td style="padding: 8px 10px; border: 1px solid #e5e7eb; text-align: right; font-family: monospace;">
+                                    <span id="ayak1Kur">0,0000</span>
+                                </td>
+                                <td style="padding: 8px 10px; border: 1px solid #e5e7eb; text-align: right; font-family: monospace; font-weight: 600;">
+                                    <span id="ayak1Tutar">0,00</span>
+                                </td>
+                                <td style="padding: 8px 10px; border: 1px solid #e5e7eb; text-align: center;">
+                                    <span style="font-weight: 600;">TL</span>
+                                </td>
+                                <td style="padding: 8px 10px; border: 1px solid #e5e7eb; text-align: right; background: #fecaca; font-family: monospace; font-weight: 600; color: #dc2626;">
+                                    <span id="ayak1Bsmv">0,00</span>
+                                </td>
+                            </tr>
+                            <!-- Alış Satırı (2. Ayak) -->
+                            <tr id="arbitrajAlisRow" style="background: #f0fdf4;">
+                                <td style="padding: 8px 10px; border: 1px solid #e5e7eb;">
+                                    <div style="display: flex; align-items: center; gap: 6px;">
+                                        <select id="arbitrajIslem2" style="padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px; background: white; font-size: 0.8rem;">
+                                            <option value="ALIS" selected>ALIŞ</option>
+                                        </select>
+                                        <span style="color: #64748b; font-size: 0.75rem;">▼</span>
+                                    </div>
+                                </td>
+                                <td style="padding: 8px 10px; border: 1px solid #e5e7eb;">
+                                    <span id="ayak2Kodu" style="font-weight: 600; color: #1e293b;">USD</span>
+                                </td>
+                                <td style="padding: 8px 10px; border: 1px solid #e5e7eb; text-align: right; font-family: monospace;">
+                                    <span id="ayak2Miktar">0,00</span>
+                                </td>
+                                <td style="padding: 8px 10px; border: 1px solid #e5e7eb; text-align: right; font-family: monospace;">
+                                    <span id="ayak2Kur">0,0000</span>
+                                </td>
+                                <td style="padding: 8px 10px; border: 1px solid #e5e7eb; text-align: right; font-family: monospace; font-weight: 600;">
+                                    <span id="ayak2Tutar">0,00</span>
+                                </td>
+                                <td style="padding: 8px 10px; border: 1px solid #e5e7eb; text-align: center;">
+                                    <span style="font-weight: 600;">TL</span>
+                                </td>
+                                <td style="padding: 8px 10px; border: 1px solid #e5e7eb; text-align: right; background: #e5e7eb; font-family: monospace; color: #64748b;">
+                                    -
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Alt Bilgi -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #f8fafc; border: 1px solid #d1d5db; border-top: none; border-radius: 0 0 6px 6px;">
+                        <div style="font-size: 0.8rem; color: #64748b;">
+                            <i class="fas fa-info-circle"></i> İşlem kesildiğinde 2 ayrı belge oluşturulur. BSMV sadece satış ayağına uygulanır.
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 0.85rem; color: #374151;">Toplam BSMV:</span>
+                            <span id="arbitrajToplamBsmv" style="font-weight: 700; color: #dc2626; font-size: 1rem; background: #fecaca; padding: 4px 10px; border-radius: 4px;">0,00 TL</span>
+                        </div>
                     </div>
                 </div>
 
@@ -1199,6 +1345,9 @@
     </div>
 
     <script>
+        // Global değişkenler - EN BAŞTA tanımlanmalı
+        let musteriMuafiyet = false;
+
         // Filter tabs toggle
         document.querySelectorAll('.filter-tabs').forEach(tabGroup => {
             tabGroup.querySelectorAll('.filter-tab').forEach(tab => {
@@ -1266,7 +1415,7 @@
         }
 
         // Müşteri seç
-        function selectCustomer(id, name, status, passiveReason = '', passiveDate = '') {
+        function selectCustomer(id, name, status, passiveReason = '', passiveDate = '', vergiMuaf = false) {
             // Dropdown'u kapat
             document.getElementById('customerDropdown').classList.remove('show');
 
@@ -1287,6 +1436,20 @@
             badge.textContent = status === 'active' ? 'Aktif' : 'Pasif';
             badge.className = 'customer-status-badge ' + status;
 
+            // Muafiyet badge ve info kutusu
+            const muafiyetBadge = document.getElementById('selectedCustomerMuafiyetBadge');
+            const muafiyetInfo = document.getElementById('muafiyetInfo');
+            if (vergiMuaf) {
+                muafiyetBadge.style.display = 'inline-block';
+                muafiyetInfo.style.display = 'block';
+            } else {
+                muafiyetBadge.style.display = 'none';
+                muafiyetInfo.style.display = 'none';
+            }
+
+            // Müşteri muafiyet durumunu global değişkene kaydet
+            musteriMuafiyet = vergiMuaf;
+
             // Pasif müşteri ise uyarı göster
             const passiveWarning = document.getElementById('passiveWarning');
             if (status === 'passive') {
@@ -1296,6 +1459,10 @@
             } else {
                 passiveWarning.style.display = 'none';
             }
+
+            // BSMV kurallarını güncelle
+            applyBSMVRules();
+            calculateBSMV();
         }
 
         // Pasif müşteriyle devam et
@@ -1310,6 +1477,261 @@
             warning.style.background = '#d1fae5';
             warning.style.borderColor = '#6ee7b7';
         }
+
+        // ==================== BSMV VE ARBİTRAJ FONKSİYONLARI ====================
+
+        // BSMV Oranı (binde)
+        const BSMV_ORAN = 2; // ‰2
+
+        // Türkçe ve İngilizce sayı formatını akıllıca parse et
+        function parseNumber(value) {
+            if (!value) return 0;
+            let str = String(value).trim();
+
+            // Hem nokta hem virgül varsa: Türkçe format (1.234,56 veya 1.234.567,89)
+            if (str.includes('.') && str.includes(',')) {
+                // Noktalar binlik, virgül ondalık
+                str = str.replace(/\./g, '').replace(',', '.');
+            }
+            // Sadece virgül varsa: Türkçe ondalık (51,22)
+            else if (str.includes(',') && !str.includes('.')) {
+                str = str.replace(',', '.');
+            }
+            // Sadece nokta varsa: İngilizce format olabilir (51.22) veya Türkçe binlik (1.000)
+            else if (str.includes('.') && !str.includes(',')) {
+                // Noktadan sonra 3 rakam varsa ve tek nokta varsa, Türkçe binlik olabilir
+                const parts = str.split('.');
+                if (parts.length === 2 && parts[1].length === 3 && parts[0].length <= 3) {
+                    // Muhtemelen Türkçe binlik: 1.000 → 1000
+                    str = str.replace('.', '');
+                }
+                // Aksi halde İngilizce ondalık olarak kabul et (51.22 → 51.22)
+            }
+
+            return parseFloat(str) || 0;
+        }
+
+        // İşlem türü değiştiğinde
+        function onIslemTuruChange() {
+            const islemTuru = document.getElementById('islemTuru').value;
+            const karsiDovizGroup = document.getElementById('karsiDovizGroup');
+            const plusBtnGroup = document.getElementById('plusBtnGroup');
+            const arbitrajOzet = document.getElementById('arbitrajOzet');
+            const caprazKurGroup = document.getElementById('caprazKurGroup');
+
+            // Arbitraj seçildiğinde karşı döviz, karşı kur ve çarpan alanlarını göster
+            const karsiKurGroup = document.getElementById('karsiKurGroup');
+
+            if (islemTuru === 'arbitraj') {
+                karsiDovizGroup.style.display = 'block';
+                karsiKurGroup.style.display = 'block';
+                caprazKurGroup.style.display = 'block';
+                plusBtnGroup.style.display = 'none';
+                arbitrajOzet.style.display = 'block';
+            } else {
+                karsiDovizGroup.style.display = 'none';
+                karsiKurGroup.style.display = 'none';
+                caprazKurGroup.style.display = 'none';
+                plusBtnGroup.style.display = 'block';
+                arbitrajOzet.style.display = 'none';
+            }
+
+            // BSMV kurallarını uygula
+            applyBSMVRules();
+            calculateBSMV();
+            updateArbitrajOzet();
+        }
+
+        // BSMV kurallarını uygula
+        function applyBSMVRules() {
+            const islemTuru = document.getElementById('islemTuru').value;
+            const bsmvCheckbox = document.getElementById('bsmvCheckbox');
+            const bsmvDahilCheckbox = document.getElementById('bsmvDahilCheckbox');
+            const bsmvTutarInput = document.getElementById('bsmvTutar');
+
+            // Muafiyet durumunu kontrol et - seçili müşteriden badge'e bak
+            const muafiyetBadge = document.getElementById('selectedCustomerMuafiyetBadge');
+            const isMuafFromBadge = muafiyetBadge && muafiyetBadge.style.display === 'inline-block';
+
+            // Her iki kaynaktan da muafiyet kontrolü
+            const hasMuafiyet = musteriMuafiyet === true || isMuafFromBadge === true;
+
+            console.log('=== applyBSMVRules ===');
+            console.log('İşlem Türü:', islemTuru);
+            console.log('musteriMuafiyet:', musteriMuafiyet);
+            console.log('isMuafFromBadge:', isMuafFromBadge);
+            console.log('hasMuafiyet (final):', hasMuafiyet);
+
+            // Önce mevcut durumu temizle
+            bsmvCheckbox.removeAttribute('checked');
+            bsmvDahilCheckbox.removeAttribute('checked');
+
+            if (islemTuru === 'alis') {
+                // ALIŞ İŞLEMLERİNDE BSMV HER ZAMAN KAPALI VE DİSABLED
+                bsmvCheckbox.checked = false;
+                bsmvCheckbox.disabled = true;
+                bsmvDahilCheckbox.checked = false;
+                bsmvDahilCheckbox.disabled = true;
+                bsmvTutarInput.value = '0,00';
+                bsmvTutarInput.style.background = '#f8fafc';
+                bsmvTutarInput.style.color = '#64748b';
+                bsmvTutarInput.style.fontWeight = 'normal';
+                // Görsel olarak devre dışı göster
+                bsmvCheckbox.parentElement.style.opacity = '0.5';
+                bsmvDahilCheckbox.parentElement.style.opacity = '0.5';
+                console.log('>>> ALIŞ: BSMV kapatıldı ve disabled yapıldı');
+            } else if (islemTuru === 'satis' || islemTuru === 'arbitraj') {
+                // Satış/Arbitraj işlemlerinde muafiyet kontrolü
+                if (hasMuafiyet) {
+                    // MUAFİYET VARSA: BSMV kapalı VE SEÇİLEMEZ (disabled)
+                    bsmvCheckbox.checked = false;
+                    bsmvCheckbox.disabled = true;  // Seçilemez yap
+                    bsmvDahilCheckbox.checked = false;
+                    bsmvDahilCheckbox.disabled = true;  // Seçilemez yap
+                    bsmvTutarInput.value = '0,00';
+                    bsmvTutarInput.style.background = '#f8fafc';
+                    bsmvTutarInput.style.color = '#64748b';
+                    // Görsel olarak devre dışı göster
+                    bsmvCheckbox.parentElement.style.opacity = '0.5';
+                    bsmvDahilCheckbox.parentElement.style.opacity = '0.5';
+                    console.log('>>> SATIŞ/ARBİTRAJ + MUAFİYET VAR: BSMV kapalı ve disabled');
+                } else {
+                    // MUAFİYET YOKSA: BSMV açık ve seçilebilir
+                    bsmvCheckbox.checked = true;
+                    bsmvCheckbox.disabled = false;
+                    bsmvDahilCheckbox.disabled = false;
+                    // Görsel olarak aktif göster
+                    bsmvCheckbox.parentElement.style.opacity = '1';
+                    bsmvDahilCheckbox.parentElement.style.opacity = '1';
+                    console.log('>>> SATIŞ/ARBİTRAJ + MUAFİYET YOK: BSMV açık');
+                }
+            } else {
+                // Seçim yapılmamış - varsayılan durum
+                bsmvCheckbox.checked = false;
+                bsmvCheckbox.disabled = true;
+                bsmvDahilCheckbox.checked = false;
+                bsmvDahilCheckbox.disabled = true;
+                bsmvCheckbox.parentElement.style.opacity = '0.5';
+                bsmvDahilCheckbox.parentElement.style.opacity = '0.5';
+                console.log('>>> İşlem türü seçilmemiş: BSMV disabled');
+            }
+
+            // Final kontrol - DOM güncellendi mi?
+            console.log('>>> Checkbox durumları - BSMV:', bsmvCheckbox.checked, '| Dahil:', bsmvDahilCheckbox.checked);
+        }
+
+        // BSMV tutarını hesapla
+        function calculateBSMV() {
+            const islemTuru = document.getElementById('islemTuru').value;
+            const bsmvCheckbox = document.getElementById('bsmvCheckbox');
+            const miktar = parseNumber(document.getElementById('miktar').value);
+            const kur = parseNumber(document.getElementById('fiyatKur').value);
+            const bsmvTutarInput = document.getElementById('bsmvTutar');
+
+            // İşlem tutarı (TL cinsinden)
+            const islemTutari = miktar * kur;
+
+            // BSMV hesapla
+            let bsmvTutar = 0;
+            if (bsmvCheckbox.checked && (islemTuru === 'satis' || islemTuru === 'arbitraj')) {
+                bsmvTutar = islemTutari * (BSMV_ORAN / 1000);
+            }
+
+            // BSMV tutarını göster
+            bsmvTutarInput.value = bsmvTutar.toLocaleString('tr-TR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
+            // BSMV durumuna göre input stilini değiştir
+            if (bsmvCheckbox.checked && bsmvTutar > 0) {
+                bsmvTutarInput.style.background = '#fef2f2';
+                bsmvTutarInput.style.color = '#dc2626';
+                bsmvTutarInput.style.fontWeight = '600';
+            } else {
+                bsmvTutarInput.style.background = '#f8fafc';
+                bsmvTutarInput.style.color = '#64748b';
+                bsmvTutarInput.style.fontWeight = 'normal';
+            }
+
+            updateArbitrajOzet();
+        }
+
+        // Arbitraj özet bilgilerini güncelle (Excel tablo formatı)
+        // Mantık: Kullanıcı SATIŞ miktarı, SATIŞ kuru ve KARŞI KUR (alış kuru) girer
+        // Sistem otomatik olarak ÇARPAN ve ALIŞ miktarını hesaplar
+        function updateArbitrajOzet() {
+            const islemTuru = document.getElementById('islemTuru').value;
+            if (islemTuru !== 'arbitraj') return;
+
+            const paraBirimi = document.getElementById('paraBirimi').value || '???';
+            const karsiDoviz = document.getElementById('karsiDoviz').value || '???';
+            const satisMiktar = parseNumber(document.getElementById('miktar').value);    // Satış miktarı (kullanıcı girer)
+            const satisKur = parseNumber(document.getElementById('fiyatKur').value);     // Satış kuru EUR/TL (kullanıcı girer)
+            const alisKur = parseNumber(document.getElementById('karsiKur').value);      // Alış kuru USD/TL (kullanıcı girer)
+            const bsmvCheckbox = document.getElementById('bsmvCheckbox');
+
+            // Çarpan hesapla: Satış Kuru / Alış Kuru = EUR/USD
+            // Örn: 37,2875 / 35,8171 = 1,04105
+            const carpan = alisKur > 0 ? satisKur / alisKur : 0;
+
+            // Çarpan input'unu güncelle
+            document.getElementById('caprazKur').value = carpan.toLocaleString('tr-TR', {
+                minimumFractionDigits: 5,
+                maximumFractionDigits: 5
+            });
+
+            // AYAK 1: Satış işlemi (Ana döviz satılır → TL alınır)
+            // Örn: 100.000 EUR × 37,2875 = 3.728.750 TL
+            const ayak1Tutar = satisMiktar * satisKur;
+
+            // BSMV hesaplama (sadece satış ayağına uygulanır)
+            let bsmvTutar = 0;
+            if (bsmvCheckbox.checked) {
+                bsmvTutar = ayak1Tutar * (BSMV_ORAN / 1000);
+            }
+
+            // AYAK 2: Alış işlemi hesaplamaları
+            // TL tutarı aynı kalır, alış miktarı = TL tutarı / Alış kuru
+            // Örn: 3.728.750 / 35,8171 = 104.105 USD
+            const ayak2Tutar = ayak1Tutar;
+            const alisMiktar = alisKur > 0 ? ayak2Tutar / alisKur : 0;
+
+            // Sayı formatı
+            const formatNumber = (num, decimals = 2) => num.toLocaleString('tr-TR', {
+                minimumFractionDigits: decimals,
+                maximumFractionDigits: decimals
+            });
+
+            // Ayak 1 (Satış) tablo hücrelerini güncelle
+            document.getElementById('ayak1Kodu').textContent = paraBirimi;
+            document.getElementById('ayak1Miktar').textContent = formatNumber(satisMiktar);
+            document.getElementById('ayak1Kur').textContent = formatNumber(satisKur, 4);
+            document.getElementById('ayak1Tutar').textContent = formatNumber(ayak1Tutar);
+            document.getElementById('ayak1Bsmv').textContent = bsmvCheckbox.checked ? formatNumber(bsmvTutar) : '-';
+
+            // Ayak 2 (Alış) tablo hücrelerini güncelle
+            document.getElementById('ayak2Kodu').textContent = karsiDoviz;
+            document.getElementById('ayak2Miktar').textContent = formatNumber(alisMiktar);
+            document.getElementById('ayak2Kur').textContent = formatNumber(alisKur, 4);
+            document.getElementById('ayak2Tutar').textContent = formatNumber(ayak2Tutar);
+
+            // Toplam BSMV
+            document.getElementById('arbitrajToplamBsmv').textContent = bsmvCheckbox.checked
+                ? `${formatNumber(bsmvTutar)} TL`
+                : '0,00 TL';
+
+            console.log('=== Arbitraj Hesaplama ===');
+            console.log('Satış:', satisMiktar, paraBirimi, '× Kur:', satisKur, '=', ayak1Tutar, 'TL');
+            console.log('Karşı Kur:', alisKur, '→ Çarpan:', carpan);
+            console.log('Alış:', alisMiktar, karsiDoviz, '× Kur:', alisKur, '=', ayak2Tutar, 'TL');
+            console.log('BSMV:', bsmvTutar);
+        }
+
+        // Sayfa yüklendiğinde
+        document.addEventListener('DOMContentLoaded', function() {
+            applyBSMVRules();
+        });
     </script>
 </body>
 </html>
