@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bakiye Ekstresi - Hakan Döviz</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        /* Modal Container */
+        .modal-container {
+            background: white;
+            border-radius: 12px;
+            width: 95%;
+            max-width: 1400px;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Modal Header */
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .close-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: #f1f5f9;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            transition: all 0.2s;
+            font-size: 1.1rem;
+        }
+
+        .close-btn:hover {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        /* Modal Body */
+        .modal-body {
+            padding: 25px;
+            overflow-y: auto;
+            max-height: calc(90vh - 80px);
+        }
+
+        /* Filter Section */
+        .filter-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: flex-end;
+            padding: 20px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .filter-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .filter-input {
+            padding: 10px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: #334155;
+            background: white;
+            min-width: 140px;
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: #c9a962;
+        }
+
+        /* Customer Tags */
+        .customer-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            flex: 1;
+            min-width: 300px;
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            background: white;
+            align-items: center;
+        }
+
+        .customer-tag {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: #c9a962;
+            color: white;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .customer-tag .remove {
+            cursor: pointer;
+            opacity: 0.8;
+        }
+
+        .customer-tag .remove:hover {
+            opacity: 1;
+        }
+
+        .clear-all {
+            padding: 6px 12px;
+            background: #f1f5f9;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: #64748b;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .clear-all:hover {
+            background: #e2e8f0;
+        }
+
+        .search-btn {
+            padding: 10px 20px;
+            background: #c9a962;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .search-btn:hover {
+            background: #b8944f;
+        }
+
+        /* Müşteri Filtre Tabs */
+        .musteri-filter-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .musteri-filter-tab {
+            padding: 10px 20px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .musteri-filter-tab:hover {
+            background: #e2e8f0;
+        }
+
+        .musteri-filter-tab.active {
+            background: #c9a962;
+            border-color: #c9a962;
+            color: white;
+        }
+
+        /* Table Container */
+        .table-container {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        thead {
+            background: #1e293b;
+            position: sticky;
+            top: 0;
+        }
+
+        th {
+            padding: 14px 12px;
+            text-align: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            border-right: 1px solid #374151;
+        }
+
+        th:first-child {
+            text-align: left;
+            min-width: 350px;
+            padding-left: 20px;
+        }
+
+        th:last-child {
+            border-right: none;
+        }
+
+        td {
+            padding: 14px 12px;
+            font-size: 0.85rem;
+            color: #334155;
+            border-bottom: 1px solid #f1f5f9;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        td:first-child {
+            text-align: left;
+            font-weight: 500;
+            color: #1e293b;
+            padding-left: 20px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: #fafafa;
+        }
+
+        /* Bakiye değerleri */
+        .bakiye-cell {
+            font-weight: 500;
+        }
+
+        .bakiye-cell.positive {
+            color: #22c55e;
+        }
+
+        .bakiye-cell.negative {
+            background: #fef2f2;
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        /* Info Note */
+        .info-note {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            color: #0369a1;
+        }
+
+        .info-note i {
+            color: #0ea5e9;
+        }
+
+        /* Scrollbar */
+        .table-wrapper::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .table-wrapper::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        .table-wrapper::-webkit-scrollbar-thumb {
+            background: #c9a962;
+            border-radius: 4px;
+        }
+
+        .table-wrapper::-webkit-scrollbar-thumb:hover {
+            background: #b8944f;
+        }
+    </style>
+</head>
+<body>
+    <!-- Modal Overlay -->
+    <div class="modal-overlay">
+        <div class="modal-container">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h2 class="modal-title">Bakiye Ekstresi - 2026-01-01 / 2026-01-27</h2>
+                <button class="close-btn" onclick="window.close()">
+                    &times;
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <!-- Filter Section -->
+                <div class="filter-section">
+                    <div class="filter-group">
+                        <span class="filter-label">Başlangıç</span>
+                        <input type="date" class="filter-input" value="2026-01-01">
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">Bitiş</span>
+                        <input type="date" class="filter-input" value="2026-01-27">
+                    </div>
+                    <div class="filter-group" style="flex: 1;">
+                        <span class="filter-label">Müşteriler</span>
+                        <div class="customer-tags">
+                            <span class="customer-tag">
+                                RG İnternet Reklam ve Bilişim Teknolojileri Limited Şirketi
+                                <i class="fas fa-times remove" onclick="removeTag(this)"></i>
+                            </span>
+                            <span class="customer-tag">
+                                Barış Çakmakçı
+                                <i class="fas fa-times remove" onclick="removeTag(this)"></i>
+                            </span>
+                            <button class="clear-all" onclick="clearAllTags()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button class="search-btn">
+                        Ara
+                    </button>
+                </div>
+
+                <!-- Müşteri Filter Tabs -->
+                <div class="musteri-filter-tabs">
+                    <button class="musteri-filter-tab active" onclick="filterMusteriler('kendi', this)">
+                        <i class="fas fa-user" style="margin-right: 6px;"></i>
+                        Kendi Müşterilerim
+                    </button>
+                    <button class="musteri-filter-tab" onclick="filterMusteriler('tum', this)">
+                        <i class="fas fa-users" style="margin-right: 6px;"></i>
+                        Tüm Müşteriler
+                    </button>
+                </div>
+
+                <!-- Info Note -->
+                <div class="info-note">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Sadece bakiyesi olan para birimleri gösterilmektedir. Sıfır bakiyeli sütunlar gizlenmiştir.</span>
+                </div>
+
+                <!-- Table -->
+                <div class="table-container">
+                    <div class="table-wrapper">
+                        <table id="bakiyeTable">
+                            <thead>
+                                <tr>
+                                    <th>Hesap Adı</th>
+                                    <!-- Sadece bakiyesi olan para birimleri gösterilecek -->
+                                    <th>TRYD</th>
+                                    <th>TRY</th>
+                                    <th>USD</th>
+                                    <th>EUR</th>
+                                    <th>GBP</th>
+                                    <th>CHF</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bakiyeTableBody">
+                                <!-- Kendi Müşterilerim -->
+                                <tr class="kendi-musteri" data-tryd="B" data-try="47904" data-usd="" data-eur="" data-gbp="" data-chf="">
+                                    <td>
+                                        RG İnternet Reklam ve Bilişim Teknolojileri Limited Şirketi
+                                    </td>
+                                    <td class="bakiye-cell" data-col="tryd">B</td>
+                                    <td class="bakiye-cell negative" data-col="try">47.904,00</td>
+                                    <td class="bakiye-cell positive" data-col="usd"></td>
+                                    <td class="bakiye-cell positive" data-col="eur"></td>
+                                    <td class="bakiye-cell positive" data-col="gbp"></td>
+                                    <td class="bakiye-cell positive" data-col="chf"></td>
+                                </tr>
+                                <tr class="kendi-musteri" data-tryd="" data-try="12500" data-usd="500" data-eur="" data-gbp="" data-chf="">
+                                    <td>Barış Çakmakçı</td>
+                                    <td class="bakiye-cell" data-col="tryd"></td>
+                                    <td class="bakiye-cell positive" data-col="try">12.500,00</td>
+                                    <td class="bakiye-cell positive" data-col="usd">500,00</td>
+                                    <td class="bakiye-cell positive" data-col="eur"></td>
+                                    <td class="bakiye-cell positive" data-col="gbp"></td>
+                                    <td class="bakiye-cell positive" data-col="chf"></td>
+                                </tr>
+                                <tr class="kendi-musteri" data-tryd="B" data-try="625906.40" data-usd="1000" data-eur="2225" data-gbp="1000" data-chf="">
+                                    <td>
+                                        Ufuk Doğan
+                                    </td>
+                                    <td class="bakiye-cell" data-col="tryd">B</td>
+                                    <td class="bakiye-cell negative" data-col="try">625.906,40</td>
+                                    <td class="bakiye-cell positive" data-col="usd">1.000,00</td>
+                                    <td class="bakiye-cell positive" data-col="eur">2.225,00</td>
+                                    <td class="bakiye-cell positive" data-col="gbp">1.000,00</td>
+                                    <td class="bakiye-cell positive" data-col="chf"></td>
+                                </tr>
+                                <!-- Diğer Temsilcilerin Müşterileri (Tüm Müşteriler seçilince görünür) -->
+                                <tr class="diger-musteri" style="display: none;" data-tryd="" data-try="85000" data-usd="" data-eur="5000" data-gbp="" data-chf="">
+                                    <td>Atlas Gıda San. Tic. A.Ş.</td>
+                                    <td class="bakiye-cell" data-col="tryd"></td>
+                                    <td class="bakiye-cell positive" data-col="try">85.000,00</td>
+                                    <td class="bakiye-cell positive" data-col="usd"></td>
+                                    <td class="bakiye-cell positive" data-col="eur">5.000,00</td>
+                                    <td class="bakiye-cell positive" data-col="gbp"></td>
+                                    <td class="bakiye-cell positive" data-col="chf"></td>
+                                </tr>
+                                <tr class="diger-musteri" style="display: none;" data-tryd="B" data-try="150000" data-usd="2500" data-eur="" data-gbp="" data-chf="10000">
+                                    <td>
+                                        Güney San. Tic. A.Ş.
+                                    </td>
+                                    <td class="bakiye-cell" data-col="tryd">B</td>
+                                    <td class="bakiye-cell negative" data-col="try">150.000,00</td>
+                                    <td class="bakiye-cell positive" data-col="usd">2.500,00</td>
+                                    <td class="bakiye-cell positive" data-col="eur"></td>
+                                    <td class="bakiye-cell positive" data-col="gbp"></td>
+                                    <td class="bakiye-cell positive" data-col="chf">10.000,00</td>
+                                </tr>
+                                <tr class="diger-musteri" style="display: none;" data-tryd="" data-try="25000" data-usd="" data-eur="" data-gbp="" data-chf="">
+                                    <td>Mehmet Yılmaz</td>
+                                    <td class="bakiye-cell" data-col="tryd"></td>
+                                    <td class="bakiye-cell positive" data-col="try">25.000,00</td>
+                                    <td class="bakiye-cell positive" data-col="usd"></td>
+                                    <td class="bakiye-cell positive" data-col="eur"></td>
+                                    <td class="bakiye-cell positive" data-col="gbp"></td>
+                                    <td class="bakiye-cell positive" data-col="chf"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Müşteri tag'ini kaldır
+        function removeTag(element) {
+            element.parentElement.remove();
+        }
+
+        // Tüm tag'leri temizle
+        function clearAllTags() {
+            const tags = document.querySelectorAll('.customer-tag');
+            tags.forEach(tag => tag.remove());
+        }
+
+        // Müşteri filtreleme
+        function filterMusteriler(type, btn) {
+            // Tab aktifliğini güncelle
+            document.querySelectorAll('.musteri-filter-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            btn.classList.add('active');
+
+            // Satırları filtrele
+            const kendiMusteriler = document.querySelectorAll('.kendi-musteri');
+            const digerMusteriler = document.querySelectorAll('.diger-musteri');
+
+            if (type === 'kendi') {
+                kendiMusteriler.forEach(row => row.style.display = '');
+                digerMusteriler.forEach(row => row.style.display = 'none');
+            } else {
+                kendiMusteriler.forEach(row => row.style.display = '');
+                digerMusteriler.forEach(row => row.style.display = '');
+            }
+
+            // Sütunları güncelle
+            hideEmptyColumns();
+        }
+
+        // Boş sütunları gizle (sadece görünen satırlara göre)
+        function hideEmptyColumns() {
+            const currencies = ['tryd', 'try', 'usd', 'eur', 'gbp', 'chf'];
+            const headerCells = document.querySelectorAll('thead th');
+            const rows = document.querySelectorAll('tbody tr');
+
+            currencies.forEach((currency, index) => {
+                let hasValue = false;
+
+                rows.forEach(row => {
+                    // Sadece görünen satırları kontrol et
+                    if (row.style.display !== 'none') {
+                        const dataValue = row.getAttribute('data-' + currency);
+                        if (dataValue && dataValue.trim() !== '') {
+                            hasValue = true;
+                        }
+                    }
+                });
+
+                // Header index: 0=Hesap Adı, 1=TRYD, 2=TRY, 3=USD, 4=EUR, 5=GBP, 6=CHF
+                const headerIndex = index + 1;
+                if (headerCells[headerIndex]) {
+                    headerCells[headerIndex].style.display = hasValue ? '' : 'none';
+                }
+
+                rows.forEach(row => {
+                    const cell = row.querySelector(`td[data-col="${currency}"]`);
+                    if (cell) {
+                        cell.style.display = hasValue ? '' : 'none';
+                    }
+                });
+            });
+        }
+
+        // Sayfa yüklendiğinde boş sütunları gizle
+        document.addEventListener('DOMContentLoaded', function() {
+            hideEmptyColumns();
+        });
+    </script>
+</body>
+</html>
