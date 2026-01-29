@@ -1179,17 +1179,17 @@
                         <div class="payment-box-title">FİRMADAN MÜŞTERİYE ÖDEME</div>
                         <div class="payment-row">
                             <span>Miktar × Kur</span>
-                            <span>0 × 0,0000</span>
+                            <span id="outgoingFormula">0 × 0,0000</span>
                         </div>
-                        <div class="payment-total">0,00 TRY</div>
+                        <div class="payment-total" id="outgoingTotal">0,00 TRY</div>
                     </div>
                     <div class="payment-box incoming">
                         <div class="payment-box-title">MÜŞTERİDEN FİRMAYA ÖDEME</div>
                         <div class="payment-row">
                             <span>Miktar × Kur</span>
-                            <span>0 × 0,0000</span>
+                            <span id="incomingFormula">0 × 0,0000</span>
                         </div>
-                        <div class="payment-total">0,00 TRY</div>
+                        <div class="payment-total" id="incomingTotal">0,00 TRY</div>
                     </div>
                 </div>
             </div>
@@ -1655,6 +1655,60 @@
             }
 
             updateArbitrajOzet();
+            updatePaymentBoxes();
+        }
+
+        // Ödeme kutularını güncelle
+        function updatePaymentBoxes() {
+            const islemTuru = document.getElementById('islemTuru').value;
+            const miktar = parseNumber(document.getElementById('miktar').value);
+            const kur = parseNumber(document.getElementById('fiyatKur').value);
+            const paraBirimi = document.getElementById('paraBirimi').value || 'DVZ';
+
+            const formatNumber = (num, decimals = 2) => num.toLocaleString('tr-TR', {
+                minimumFractionDigits: decimals,
+                maximumFractionDigits: decimals
+            });
+
+            const tlTutar = miktar * kur;
+
+            // Arbitraj için özel hesaplama
+            if (islemTuru === 'arbitraj') {
+                const karsiDoviz = document.getElementById('karsiDoviz').value || 'DVZ';
+                const alisKur = parseNumber(document.getElementById('karsiKur').value);
+                const alisMiktar = alisKur > 0 ? tlTutar / alisKur : 0;
+
+                // Firmadan Müşteriye: Alış yapılan döviz (USD)
+                document.getElementById('outgoingFormula').textContent = `${formatNumber(alisMiktar)} ${karsiDoviz}`;
+                document.getElementById('outgoingTotal').textContent = `${formatNumber(alisMiktar)} ${karsiDoviz}`;
+
+                // Müşteriden Firmaya: Satış yapılan döviz (EUR)
+                document.getElementById('incomingFormula').textContent = `${formatNumber(miktar)} ${paraBirimi}`;
+                document.getElementById('incomingTotal').textContent = `${formatNumber(miktar)} ${paraBirimi}`;
+            }
+            // Satış: Firma döviz veriyor, TL alıyor
+            else if (islemTuru === 'satis') {
+                document.getElementById('outgoingFormula').textContent = `${formatNumber(miktar)} × ${formatNumber(kur, 4)}`;
+                document.getElementById('outgoingTotal').textContent = `${formatNumber(miktar)} ${paraBirimi}`;
+
+                document.getElementById('incomingFormula').textContent = `${formatNumber(miktar)} × ${formatNumber(kur, 4)}`;
+                document.getElementById('incomingTotal').textContent = `${formatNumber(tlTutar)} TRY`;
+            }
+            // Alış: Firma TL veriyor, döviz alıyor
+            else if (islemTuru === 'alis') {
+                document.getElementById('outgoingFormula').textContent = `${formatNumber(miktar)} × ${formatNumber(kur, 4)}`;
+                document.getElementById('outgoingTotal').textContent = `${formatNumber(tlTutar)} TRY`;
+
+                document.getElementById('incomingFormula').textContent = `${formatNumber(miktar)} × ${formatNumber(kur, 4)}`;
+                document.getElementById('incomingTotal').textContent = `${formatNumber(miktar)} ${paraBirimi}`;
+            }
+            // Seçim yapılmamış
+            else {
+                document.getElementById('outgoingFormula').textContent = '0 × 0,0000';
+                document.getElementById('outgoingTotal').textContent = '0,00 TRY';
+                document.getElementById('incomingFormula').textContent = '0 × 0,0000';
+                document.getElementById('incomingTotal').textContent = '0,00 TRY';
+            }
         }
 
         // Arbitraj özet bilgilerini güncelle (Excel tablo formatı)
